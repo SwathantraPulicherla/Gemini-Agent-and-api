@@ -1,0 +1,37 @@
+name: C Unit Test and Coverage
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install lcov
+      run: sudo apt-get update && sudo apt-get install -y lcov
+
+    - name: Build and Run Tests
+      run: make test
+
+    - name: Generate Coverage Report
+      run: |
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' '*/unity/*' --output-file coverage.info
+        genhtml coverage.info --output-directory coverage_report
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./coverage_report
+        
+    - name: Create Summary
+      run: |
+        echo "### Test and Coverage Summary" >> $GITHUB_STEP_SUMMARY
+        echo "**Coverage Report:** [Click here to view](https://$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]').github.io/$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')/)" >> $GITHUB_STEP_SUMMARY

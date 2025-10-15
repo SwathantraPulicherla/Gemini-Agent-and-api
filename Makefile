@@ -1,0 +1,28 @@
+CC = gcc
+CFLAGS = -Isrc -Iunity -Wall -Wextra
+COVERAGE_FLAGS = -fprofile-arcs -ftest-coverage
+
+SRCS = src/temp_sensor.c src/temp_converter.c src/main.c
+OBJS = $(SRCS:.c=.o)
+TARGET = temp_app
+
+TEST_SRCS = tests/test_temp_sensor.c tests/test_temp_converter.c tests/test_main.c unity/unity.c src/temp_sensor.c src/temp_converter.c
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+TEST_TARGET = test_runner
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+test: $(TEST_TARGET)
+	./$(TEST_TARGET)
+
+$(TEST_TARGET): $(TEST_OBJS)
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -o $@ $(TEST_OBJS)
+
+.c.o:
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TEST_OBJS) $(TARGET) $(TEST_TARGET) *.gcda *.gcno *.info coverage_report -r
