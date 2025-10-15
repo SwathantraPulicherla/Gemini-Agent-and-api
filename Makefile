@@ -21,7 +21,13 @@ test: $(TEST_TARGET)
 $(TEST_TARGET): $(TEST_OBJS)
 	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -o $@ $(TEST_OBJS)
 
-.c.o:
+tests/%.o: tests/%.c
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -c $< -o $@
+
+src/%.o: src/%.c
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -c $< -o $@
+
+unity/%.o: unity/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
