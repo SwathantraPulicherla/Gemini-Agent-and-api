@@ -36,5 +36,5 @@ void test_check_temperature_status(void) {
 void test_get_temperature_celsius(void) {
     float temp = get_temperature_celsius();
     // Since the raw value is random, we just check if it's in a plausible range
-    TEST_ASSERT_FLOAT_WITHIN(1.0, -40.0, 125.0, temp);
+    TEST_ASSERT_TRUE(temp >= -40.0 && temp <= 125.0);
 }
