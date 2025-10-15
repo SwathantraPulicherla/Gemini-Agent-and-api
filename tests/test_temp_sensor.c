@@ -1,19 +1,14 @@
 #include "unity.h"
 #include "temp_sensor.h"
-#include "temp_converter.h" // For mocking
-
-// Mock for raw_to_celsius
-float raw_to_celsius(int raw_value) {
-    return (raw_value / 1023.0) * 165.0 - 40.0;
-}
 
 void setUp(void) {}
 void tearDown(void) {}
 
 void test_read_temperature_raw_range(void) {
     int raw = read_temperature_raw();
-    TEST_ASSERT_INT_WITHIN(0, 1023, raw);
+    TEST_ASSERT_TRUE(raw >= 0 && raw <= 1023);
 }
+
 
 void test_validate_temperature_range_valid(void) {
     TEST_ASSERT_TRUE(validate_temperature_range(25.0));
